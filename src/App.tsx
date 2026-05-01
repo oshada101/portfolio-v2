@@ -1,9 +1,13 @@
+import { useState } from "react"
 import { Routes, Route } from "react-router-dom"
 import { Warp } from "@paper-design/shaders-react"
 import chevronsDown from "./assets/chevrons-down.svg"
 import Nav from "./components/Nav"
 import ProjectsSlider from "./components/ProjectsSlider"
 import ProjectPage from "./pages/ProjectPage"
+import ContactPage from "./pages/ContactPage"
+import ContactSection from "./components/ContactSection"
+import LoadingScreen from "./components/ui/LoadingScreen"
 
 function LandingPage() {
   return (
@@ -57,15 +61,44 @@ function LandingPage() {
       <section className="bg-white min-h-screen">
         <ProjectsSlider />
       </section>
+
+      <ContactSection />
     </main>
   )
 }
 
 export default function App() {
+  const [exiting, setExiting] = useState(false)
+  const [gone,    setGone]    = useState(false)
+
+  function handleLoadComplete() {
+    setExiting(true)
+    setTimeout(() => setGone(true), 780)
+  }
+
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/projects/:id" element={<ProjectPage />} />
-    </Routes>
+    <>
+      {!gone && (
+        <div
+          className={exiting ? "loading-overlay-exit" : ""}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "hsl(0, 0%, 98%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <LoadingScreen onComplete={handleLoadComplete} />
+        </div>
+      )}
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/projects/:id" element={<ProjectPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+      </Routes>
+    </>
   )
 }

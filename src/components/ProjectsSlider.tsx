@@ -55,8 +55,37 @@ export default function ProjectsSlider() {
         Projects
       </div>
 
-      {/* Tab buttons + View All */}
-      <div className="flex items-center justify-between mb-6 w-[70%] mx-auto">
+      {/* Mobile card list */}
+      <div className="md:hidden flex flex-col gap-6 px-4 mb-8">
+        {projects.map((p) => (
+          <Link key={p.id} to={p.href} className="rounded-lg overflow-hidden shadow-xl block">
+            <div className="relative" style={{ aspectRatio: "16/9" }}>
+              <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+            </div>
+            <div className="p-4" style={{ backgroundColor: "var(--card-bg, #f5f6f8)" }}>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="font-inter font-semibold text-lg" style={{ color: "var(--primary)" }}>{p.name}</span>
+                {p.tags.map((tag) => (
+                  <span key={tag} className="font-inter text-xs px-2 py-0.5 rounded-sm bg-gray-200 text-gray-600 border border-gray-300">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <p className="font-inter text-sm text-gray-600 leading-relaxed">{p.description}</p>
+            </div>
+          </Link>
+        ))}
+        <Link
+          to="/projects"
+          className="btn-shimmer font-inter text-sm font-medium px-5 py-3 rounded-lg text-white border border-white/10 text-center"
+          style={{ backgroundColor: "var(--primary)" }}
+        >
+          View All
+        </Link>
+      </div>
+
+      {/* Desktop: Tab buttons + View All */}
+      <div className="hidden md:flex items-center justify-between mb-6 w-[70%] mx-auto">
         <div className="flex items-center gap-2 flex-wrap">
           {projects.map((p, i) => (
             <button
@@ -91,8 +120,8 @@ export default function ProjectsSlider() {
         </Link>
       </div>
 
-      {/* Slider track wrapper — no overflow-hidden, section clips */}
-      <div className="w-[70%] mx-auto relative select-none">
+      {/* Desktop slider */}
+      <div className="hidden md:block w-[70%] mx-auto relative select-none">
         {/* Track — slides are 70vw each, translate by (70vw + gap) per step */}
         <div
           className="flex transition-transform duration-500 ease-in-out"
