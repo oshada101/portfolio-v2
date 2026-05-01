@@ -1,14 +1,18 @@
-import { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { projects } from "../data/projects"
 import chevronLeft from "../assets/chevron-left.svg"
 import chevronRight from "../assets/chevron-right.svg"
+import { useInView } from "../hooks/useInView"
 
 export default function ProjectsSlider() {
   const [current, setCurrent] = useState(0)
   const [dragging, setDragging] = useState(false)
   const dragStart = useRef(0)
   const didDrag = useRef(false)
+  const [titleRef, titleInView] = useInView()
+  const [sliderRef, sliderInView] = useInView()
+  const [desktopRef, desktopInView] = useInView()
 
   const prev = () => setCurrent((c) => (c - 1 + projects.length) % projects.length)
   const next = () => setCurrent((c) => (c + 1) % projects.length)
@@ -49,14 +53,15 @@ export default function ProjectsSlider() {
   return (
     <section id="projects" className="min-h-screen flex flex-col justify-center py-20 overflow-hidden">
       <div
-        className="font-inter text-center text-3xl font-bold mb-10"
+        ref={titleRef as React.RefObject<HTMLDivElement>}
+        className={`font-inter text-center text-3xl font-bold mb-10 scroll-reveal${titleInView ? " in-view" : ""}`}
         style={{ color: "var(--primary)" }}
       >
         Projects
       </div>
 
       {/* Mobile card list */}
-      <div className="md:hidden flex flex-col gap-6 px-4 mb-8">
+      <div ref={sliderRef as React.RefObject<HTMLDivElement>} className={`md:hidden flex flex-col gap-6 px-4 mb-8 scroll-reveal scroll-reveal-d1${sliderInView ? " in-view" : ""}`}>
         {projects.map((p) => (
           <Link key={p.id} to={p.href} className="rounded-lg overflow-hidden shadow-xl block">
             <div className="relative" style={{ aspectRatio: "16/9" }}>
@@ -85,7 +90,7 @@ export default function ProjectsSlider() {
       </div>
 
       {/* Desktop: Tab buttons + View All */}
-      <div className="hidden md:flex items-center justify-between mb-6 w-[70%] mx-auto">
+      <div ref={desktopRef as React.RefObject<HTMLDivElement>} className={`hidden md:flex items-center justify-between mb-6 w-[70%] mx-auto scroll-reveal scroll-reveal-d1${desktopInView ? " in-view" : ""}`}>
         <div className="flex items-center gap-2 flex-wrap">
           {projects.map((p, i) => (
             <button
@@ -121,7 +126,9 @@ export default function ProjectsSlider() {
       </div>
 
       {/* Desktop slider */}
-      <div className="hidden md:block w-[70%] mx-auto relative select-none">
+      <div
+        className={`hidden md:block w-[70%] mx-auto relative select-none scroll-reveal scroll-reveal-d2${desktopInView ? " in-view" : ""}`}
+      >
         {/* Track — slides are 70vw each, translate by (70vw + gap) per step */}
         <div
           className="flex transition-transform duration-500 ease-in-out"

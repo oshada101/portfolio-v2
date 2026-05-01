@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Routes, Route } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Routes, Route, useLocation } from "react-router-dom"
 import { Warp } from "@paper-design/shaders-react"
 import chevronsDown from "./assets/chevrons-down.svg"
 import Nav from "./components/Nav"
@@ -7,7 +7,14 @@ import ProjectsSlider from "./components/ProjectsSlider"
 import ProjectPage from "./pages/ProjectPage"
 import ContactPage from "./pages/ContactPage"
 import ContactSection from "./components/ContactSection"
+import ServicesSection from "./components/ServicesSection"
 import LoadingScreen from "./components/ui/LoadingScreen"
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }) }, [pathname])
+  return null
+}
 
 function LandingPage() {
   return (
@@ -62,6 +69,8 @@ function LandingPage() {
         <ProjectsSlider />
       </section>
 
+      <ServicesSection />
+
       <ContactSection />
     </main>
   )
@@ -94,6 +103,7 @@ export default function App() {
           <LoadingScreen onComplete={handleLoadComplete} />
         </div>
       )}
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/projects/:id" element={<ProjectPage />} />

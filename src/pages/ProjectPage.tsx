@@ -1,8 +1,8 @@
 import { useParams, Link } from "react-router-dom"
 import { projects } from "../data/projects"
 import Nav from "../components/Nav"
-import chevronLeft from "../assets/chevron-left.svg"
-import chevronRight from "../assets/chevron-right.svg"
+import MediaSlider from "../components/MediaSlider"
+import { Warp } from "@paper-design/shaders-react"
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   "Live":             { bg: "rgba(34,197,94,0.15)",    text: "#22c55e" },
@@ -37,8 +37,6 @@ export default function ProjectPage() {
     )
   }
 
-  const prevProject = projects[(idx - 1 + projects.length) % projects.length]
-  const nextProject = projects[(idx + 1) % projects.length]
   const statusStyle = STATUS_STYLES[project.status] ?? STATUS_STYLES["Archived"]
 
   return (
@@ -50,29 +48,29 @@ export default function ProjectPage() {
         className="min-h-screen relative flex overflow-hidden"
         style={{ backgroundColor: "var(--primary)" }}
       >
-        {/* Subtle dot-grid texture */}
-        <div
-          className="absolute inset-0 z-[1] pointer-events-none"
-          style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        {/* Fullscreen shader background */}
+        <div className="absolute inset-0 z-0">
+          <Warp
+            style={{ width: "100%", height: "100%" }}
+            colors={project.shader.colors}
+            proportion={project.shader.proportion}
+            softness={project.shader.softness}
+            distortion={project.shader.distortion}
+            swirl={project.shader.swirl}
+            swirlIterations={project.shader.swirlIterations}
+            shape={project.shader.shape}
+            shapeScale={project.shader.shapeScale}
+            scale={1}
+            rotation={0}
+            speed={project.shader.speed}
+          />
+        </div>
+
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: "rgba(0,0,0,0.35)" }} />
 
         {/* Left text panel */}
         <div className="relative z-10 flex-1 flex flex-col justify-end pb-20 pt-36 px-12 md:px-20 lg:px-28">
-          {/* Ghost index number */}
-          <span
-            className="absolute top-1/2 -translate-y-1/2 left-6 font-montserrat-alt font-bold select-none pointer-events-none"
-            style={{
-              fontSize: "clamp(8rem, 22vw, 26rem)",
-              color: "rgba(255,255,255,0.025)",
-              lineHeight: 1,
-            }}
-          >
-            {String(idx + 1).padStart(2, "0")}
-          </span>
-
           {/* Tags */}
           <div
             className="flex items-center gap-2 mb-7"
@@ -118,21 +116,6 @@ export default function ProjectPage() {
           </div>
         </div>
 
-        {/* Right image panel — hidden on small screens */}
-        <div className="hidden md:block relative shrink-0" style={{ width: "52%" }}>
-          <img
-            src={project.image}
-            alt={project.name}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ animation: "project-image-reveal 1.1s cubic-bezier(0.22,1,0.36,1) both", animationDelay: "120ms" }}
-          />
-          {/* Gradient blending left edge into primary bg */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: "linear-gradient(to right, var(--primary) 0%, rgba(12,0,56,0.5) 30%, transparent 60%)" }}
-          />
-        </div>
-
         {/* Scroll hint */}
         <div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
@@ -149,15 +132,15 @@ export default function ProjectPage() {
 
       {/* ── Content ─────────────────────────────────────────────── */}
       <section className="bg-white py-24">
-        <div className="max-w-5xl mx-auto px-8 md:px-12">
 
-          {/* Back */}
-          <Link
-            to="/"
-            className="nav-link font-space-mono text-xs uppercase tracking-[0.22em] inline-flex items-center gap-2 mb-16"
-          >
-            ← All Projects
-          </Link>
+        {/* Media slider — nav-width, centered */}
+        {project.media && project.media.length > 0 && (
+          <div className="w-[calc(100%-2rem)] md:w-[70%] mx-auto mb-16">
+            <MediaSlider items={project.media} />
+          </div>
+        )}
+
+        <div className="max-w-5xl mx-auto px-8 md:px-12">
 
           {/* Accent rule */}
           <div
@@ -243,6 +226,7 @@ export default function ProjectPage() {
           <div className="w-full h-px my-16" style={{ backgroundColor: "#e5e4e7" }} />
 
           {/* Links */}
+
           <div>
             <p
               className="font-space-mono text-xs uppercase tracking-[0.3em] mb-6"
@@ -266,96 +250,19 @@ export default function ProjectPage() {
             </div>
           </div>
 
+          {/* Back */}
+          <div className="flex justify-center mt-16">
+            <Link
+              to="/"
+              className="nav-link font-space-mono text-xs uppercase tracking-[0.22em] inline-flex items-center gap-2"
+            >
+              ← All Projects
+            </Link>
+          </div>
+
         </div>
       </section>
 
-      {/* ── Prev / Next ──────────────────────────────────────────── */}
-      <section style={{ backgroundColor: "var(--primary)" }}>
-        <div
-          className="w-full h-px"
-          style={{ background: "linear-gradient(to right, transparent, var(--accent-border), transparent)" }}
-        />
-        <div className="grid grid-cols-2">
-
-          {/* Previous */}
-          <Link
-            to={prevProject.href}
-            className="group flex flex-col justify-between p-10 md:p-16 border-r transition-colors duration-200 hover:bg-white/[0.04]"
-            style={{ borderColor: "rgba(255,255,255,0.08)" }}
-          >
-            <span
-              className="font-space-mono text-xs uppercase tracking-[0.22em] flex items-center gap-2 mb-8"
-              style={{ color: "rgba(255,255,255,0.28)" }}
-            >
-              <img src={chevronLeft} alt="" width={11} height={11} className="invert opacity-40" />
-              Previous
-            </span>
-            <div>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {prevProject.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-space-mono text-xs px-2 py-0.5 rounded-sm border"
-                    style={{ color: "rgba(255,255,255,0.25)", borderColor: "rgba(255,255,255,0.1)" }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <span
-                className="font-montserrat-alt font-bold block transition-colors duration-200"
-                style={{
-                  fontSize: "clamp(1.4rem, 3.5vw, 3.25rem)",
-                  color: "rgba(255,255,255,0.55)",
-                }}
-              >
-                <span className="group-hover:text-white transition-colors duration-200">
-                  {prevProject.name}
-                </span>
-              </span>
-            </div>
-          </Link>
-
-          {/* Next */}
-          <Link
-            to={nextProject.href}
-            className="group flex flex-col justify-between p-10 md:p-16 text-right transition-colors duration-200 hover:bg-white/[0.04]"
-          >
-            <span
-              className="font-space-mono text-xs uppercase tracking-[0.22em] flex items-center justify-end gap-2 mb-8"
-              style={{ color: "rgba(255,255,255,0.28)" }}
-            >
-              Next
-              <img src={chevronRight} alt="" width={11} height={11} className="invert opacity-40" />
-            </span>
-            <div>
-              <div className="flex flex-wrap gap-1.5 mb-3 justify-end">
-                {nextProject.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-space-mono text-xs px-2 py-0.5 rounded-sm border"
-                    style={{ color: "rgba(255,255,255,0.25)", borderColor: "rgba(255,255,255,0.1)" }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <span
-                className="font-montserrat-alt font-bold block transition-colors duration-200"
-                style={{
-                  fontSize: "clamp(1.4rem, 3.5vw, 3.25rem)",
-                  color: "rgba(255,255,255,0.55)",
-                }}
-              >
-                <span className="group-hover:text-white transition-colors duration-200">
-                  {nextProject.name}
-                </span>
-              </span>
-            </div>
-          </Link>
-
-        </div>
-      </section>
     </div>
   )
 }

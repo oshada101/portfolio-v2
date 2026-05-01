@@ -1,5 +1,21 @@
 import elizabethImg from "../assets/projects/elizabeth.png"
 
+export type MediaItem =
+  | { type: "image"; src: string; alt?: string }
+  | { type: "video"; src: string; poster?: string }
+
+export interface ShaderParams {
+  colors: string[]
+  proportion: number
+  softness: number
+  distortion: number
+  swirl: number
+  swirlIterations: number
+  shape: "checks" | "dots" | "lines"
+  shapeScale: number
+  speed: number
+}
+
 export interface Project {
   id: string
   name: string
@@ -12,6 +28,8 @@ export interface Project {
   status: "Live" | "In Development" | "Archived"
   techStack: string[]
   links: { label: string; url: string }[]
+  media?: MediaItem[]
+  shader: ShaderParams
 }
 
 export const projects: Project[] = [
@@ -27,6 +45,22 @@ export const projects: Project[] = [
     status: "In Development",
     techStack: ["Python", "FastAPI", "React", "TypeScript", "LangChain", "FAISS", "SQLite"],
     links: [{ label: "GitHub", url: "#" }],
+    media: [
+      { type: "image", src: elizabethImg, alt: "Elizabeth dashboard" },
+      { type: "image", src: elizabethImg, alt: "Elizabeth search view" },
+      { type: "video", src: "/placeholder.mp4", poster: elizabethImg },
+    ],
+    shader: {
+      colors: ["hsl(260, 80%, 6%)", "hsl(280, 90%, 38%)", "hsl(240, 60%, 52%)", "hsl(300, 40%, 18%)"],
+      proportion: 0.38,
+      softness: 0.9,
+      distortion: 0.4,
+      swirl: 1.2,
+      swirlIterations: 14,
+      shape: "checks",
+      shapeScale: 0.08,
+      speed: 0.5,
+    },
   },
   {
     id: "rescue-rush",
@@ -43,6 +77,22 @@ export const projects: Project[] = [
       { label: "GitHub", url: "#" },
       { label: "Live Demo", url: "#" },
     ],
+    media: [
+      { type: "image", src: elizabethImg, alt: "Rescue Rush live map" },
+      { type: "video", src: "/placeholder.mp4", poster: elizabethImg },
+      { type: "image", src: elizabethImg, alt: "Rescue Rush dispatch panel" },
+    ],
+    shader: {
+      colors: ["hsl(10, 70%, 5%)", "hsl(22, 95%, 42%)", "hsl(42, 88%, 52%)", "hsl(0, 55%, 22%)"],
+      proportion: 0.52,
+      softness: 1.2,
+      distortion: 0.18,
+      swirl: 0.5,
+      swirlIterations: 8,
+      shape: "dots",
+      shapeScale: 0.14,
+      speed: 0.8,
+    },
   },
   {
     id: "mct",
@@ -56,5 +106,21 @@ export const projects: Project[] = [
     status: "Archived",
     techStack: ["React Native", "TypeScript", "SQLCipher", "Expo", "Signal Protocol", "Node.js"],
     links: [{ label: "GitHub", url: "#" }],
+    media: [
+      { type: "image", src: elizabethImg, alt: "MCT terminal view" },
+      { type: "video", src: "/placeholder.mp4", poster: elizabethImg },
+      { type: "image", src: elizabethImg, alt: "MCT encrypted log" },
+    ],
+    shader: {
+      colors: ["hsl(160, 55%, 4%)", "hsl(172, 78%, 28%)", "hsl(142, 48%, 38%)", "hsl(180, 35%, 12%)"],
+      proportion: 0.6,
+      softness: 0.7,
+      distortion: 0.32,
+      swirl: 1.8,
+      swirlIterations: 18,
+      shape: "lines",
+      shapeScale: 0.06,
+      speed: 0.35,
+    },
   },
 ]

@@ -1,3 +1,6 @@
+import React from "react"
+import { useInView } from "../hooks/useInView"
+
 const LINKS = [
   {
     label: "GitHub",
@@ -17,6 +20,9 @@ const LINKS = [
 ]
 
 export default function ContactSection() {
+  const [headerRef, headerInView] = useInView()
+  const [linksRef, linksInView] = useInView()
+
   return (
     <section
       id="contact"
@@ -40,7 +46,7 @@ export default function ContactSection() {
       <div className="relative z-10 max-w-6xl mx-auto px-8 md:px-16 lg:px-24">
 
         {/* Header */}
-        <div className="mb-14">
+        <div ref={headerRef as React.RefObject<HTMLDivElement>} className={`mb-14 scroll-reveal${headerInView ? " in-view" : ""}`}>
           <p
             className="font-space-mono text-xs uppercase tracking-[0.35em] mb-5"
             style={{ color: "#aa3bff" }}
@@ -56,15 +62,15 @@ export default function ContactSection() {
         </div>
 
         {/* Link rows */}
-        <div>
+        <div ref={linksRef as React.RefObject<HTMLDivElement>}>
           {LINKS.map((link, i) => (
             <a
               key={link.label}
               href={link.href}
               target={link.href.startsWith("mailto") ? undefined : "_blank"}
               rel="noopener noreferrer"
-              className="group flex items-center justify-between border-t py-8 md:py-10 transition-all duration-300 hover:pl-3"
-              style={{ borderColor: "#e5e4e7" }}
+              className={`group flex items-center justify-between border-t py-8 md:py-10 transition-all duration-300 hover:pl-3 scroll-reveal${linksInView ? " in-view" : ""}`}
+              style={{ borderColor: "#e5e4e7", transitionDelay: linksInView ? `${i * 0.13}s` : "0s" }}
             >
               {/* Left: index + name */}
               <div className="flex items-baseline gap-5">

@@ -17,7 +17,7 @@ export default function Nav() {
           to="/"
           className="font-montserrat-alt text-3xl tracking-widest"
           style={{ color: "var(--primary)" }}
-          onClick={() => setOpen(false)}
+          onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }) }}
         >
           OSHADA
         </Link>
