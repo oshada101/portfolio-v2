@@ -4,13 +4,13 @@ import { useInView } from "../hooks/useInView"
 const LINKS = [
   {
     label: "GitHub",
-    sublabel: "github.com/oshada",
-    href: "https://github.com/oshada",
+    sublabel: "github.com/oshada101",
+    href: "https://github.com/oshada101",
   },
   {
     label: "Email",
-    sublabel: "copier5612@proton.me",
-    href: "mailto:copier5612@proton.me",
+    sublabel: "oshada1188@gmail.com",
+    href: "mailto:oshada1188@gmail.com",
   },
   {
     label: "LinkedIn",

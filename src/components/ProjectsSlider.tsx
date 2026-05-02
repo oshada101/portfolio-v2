@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { projects } from "../data/projects"
+import { featuredProjects as projects } from "../data/projects"
 import chevronLeft from "../assets/chevron-left.svg"
 import chevronRight from "../assets/chevron-right.svg"
 import { useInView } from "../hooks/useInView"

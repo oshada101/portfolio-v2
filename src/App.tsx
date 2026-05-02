@@ -6,6 +6,7 @@ import Nav from "./components/Nav"
 import ProjectsSlider from "./components/ProjectsSlider"
 import ProjectPage from "./pages/ProjectPage"
 import ContactPage from "./pages/ContactPage"
+import AllProjectsPage from "./pages/AllProjectsPage"
 import ContactSection from "./components/ContactSection"
 import ServicesSection from "./components/ServicesSection"
 import LoadingScreen from "./components/ui/LoadingScreen"
@@ -108,6 +109,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/projects/:id" element={<ProjectPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/projects" element={<AllProjectsPage />} />
       </Routes>
     </>
   )
