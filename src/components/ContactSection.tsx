@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useInView } from "../hooks/useInView"
 
 const LINKS = [
@@ -14,14 +14,24 @@ const LINKS = [
   },
   {
     label: "LinkedIn",
-    sublabel: "linkedin.com/in/oshada",
-    href: "https://linkedin.com/in/oshada",
+    sublabel: "linkedin.com/in/oshada-bandara-595b31394",
+    href: "https://www.linkedin.com/in/oshada-bandara-595b31394",
   },
 ]
 
 export default function ContactSection() {
   const [headerRef, headerInView] = useInView()
   const [linksRef, linksInView] = useInView()
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+
+  function copyLink(e: React.MouseEvent, link: typeof LINKS[number], i: number) {
+    e.preventDefault()
+    e.stopPropagation()
+    const text = link.href.startsWith("mailto:") ? link.href.replace("mailto:", "") : link.href
+    navigator.clipboard.writeText(text)
+    setCopiedIndex(i)
+    setTimeout(() => setCopiedIndex(null), 1800)
+  }
 
   return (
     <section
@@ -88,20 +98,44 @@ export default function ContactSection() {
                 </span>
               </div>
 
-              {/* Right: sublabel + arrow */}
-              <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
-                <span
-                  className="font-space-mono text-xs uppercase tracking-[0.15em] transition-opacity duration-300 opacity-0 group-hover:opacity-100 hidden md:block"
-                  style={{ color: "#6b6375" }}
+              {/* Right: sublabel + actions */}
+              <div className="flex items-center gap-4 ml-4 shrink-0">
+                <div className="flex flex-col items-end gap-2">
+                  <span
+                    className="font-space-mono text-xs uppercase tracking-[0.15em] transition-opacity duration-300 opacity-0 group-hover:opacity-100 hidden md:block"
+                    style={{ color: "#6b6375" }}
+                  >
+                    {link.sublabel}
+                  </span>
+                  <span
+                    className="font-montserrat-alt text-2xl md:text-3xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                    style={{ color: "rgba(170,59,255,0.45)" }}
+                  >
+                    ↗
+                  </span>
+                </div>
+                <button
+                  onClick={(e) => copyLink(e, link, i)}
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1.5 px-3 py-1.5 rounded-md border font-space-mono text-xs uppercase tracking-[0.1em] hover:bg-[#aa3bff] hover:border-[#aa3bff] hover:text-white"
+                  style={{
+                    borderColor: copiedIndex === i ? "#aa3bff" : "#d1d0d4",
+                    color: copiedIndex === i ? "#aa3bff" : "#6b6375",
+                    opacity: copiedIndex === i ? 1 : undefined,
+                  }}
+                  aria-label={`Copy ${link.label} link`}
                 >
-                  {link.sublabel}
-                </span>
-                <span
-                  className="font-montserrat-alt text-2xl md:text-3xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                  style={{ color: "rgba(170,59,255,0.45)" }}
-                >
-                  ↗
-                </span>
+                  {copiedIndex === i ? (
+                    <>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="4" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M8 4V3a1 1 0 00-1-1H3a1 1 0 00-1 1v4a1 1 0 001 1h1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                      Copy
+                    </>
+                  )}
+                </button>
               </div>
             </a>
           ))}
