@@ -44,7 +44,7 @@ function LandingPage() {
           className="relative z-10 min-h-screen flex items-center justify-center px-8"
           style={{ mixBlendMode: "difference" }}
         >
-          <h1 className="font-space-mono text-6xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight">
+          <h1 className="font-space-mono text-4xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight">
             Turning Ideas Into Reality
           </h1>
         </div>
