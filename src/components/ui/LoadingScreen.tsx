@@ -30,8 +30,8 @@ export default function LoadingScreen({
   onComplete,
 }: LoadingScreenProps) {
   const [auto, setAuto] = React.useState(0)
-  const raf = React.useRef<number>()
-  const t0  = React.useRef<number>()
+  const raf = React.useRef<number | undefined>(undefined)
+  const t0  = React.useRef<number | undefined>(undefined)
   const progress = ext ?? auto
 
   React.useEffect(() => {

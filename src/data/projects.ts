@@ -16,7 +16,7 @@ export interface ShaderParams {
     distortion: number;
     swirl: number;
     swirlIterations: number;
-    shape: "checks" | "dots" | "lines";
+    shape: "checks" | "stripes" | "edge";
     shapeScale: number;
     speed: number;
 }
@@ -120,7 +120,7 @@ export const projects: Project[] = [
             distortion: 0.18,
             swirl: 0.5,
             swirlIterations: 8,
-            shape: "dots",
+            shape: "edge",
             shapeScale: 0.14,
             speed: 0.8,
         },
@@ -151,7 +151,7 @@ export const projects: Project[] = [
     distortion: 0.32,
     swirl: 1.8,
     swirlIterations: 18,
-    shape: "lines",
+    shape: "stripes",
     shapeScale: 0.06,
     speed: 0.35,
   },
@@ -199,7 +199,7 @@ export const projects: Project[] = [
             distortion: 0.22,
             swirl: 0.9,
             swirlIterations: 11,
-            shape: "dots",
+            shape: "edge",
             shapeScale: 0.11,
             speed: 0.45,
         },
@@ -248,7 +248,7 @@ export const projects: Project[] = [
             distortion: 0.28,
             swirl: 1.1,
             swirlIterations: 13,
-            shape: "lines",
+            shape: "stripes",
             shapeScale: 0.09,
             speed: 0.6,
         },
@@ -339,7 +339,7 @@ export const projects: Project[] = [
             distortion: 0.38,
             swirl: 1.5,
             swirlIterations: 16,
-            shape: "dots",
+            shape: "edge",
             shapeScale: 0.1,
             speed: 0.4,
         },
