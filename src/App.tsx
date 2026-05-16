@@ -20,7 +20,12 @@ function ScrollToTop() {
 function LandingPage() {
   return (
     <main>
-      <section className="relative min-h-screen overflow-hidden">
+      <div style={{ height: "100vh" }} aria-hidden="true" />
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000 }}>
+        <Nav />
+      </div>
+
+      <section className="relative overflow-hidden h-screen" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 0 }}>
         <div className="absolute inset-0">
           <Warp
             style={{ height: "100%", width: "100%" }}
@@ -38,13 +43,11 @@ function LandingPage() {
           />
         </div>
 
-        <Nav />
-
         <div
-          className="relative z-10 min-h-screen flex items-center justify-center px-8"
-          style={{ mixBlendMode: "difference" }}
+          className="relative z-10 flex items-center justify-center px-8"
+          style={{ height: "100vh", mixBlendMode: "overlay" }}
         >
-          <h1 className="font-space-mono text-4xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight">
+          <h1 className="font-space-mono text-3xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight uppercase">
             Turning Ideas Into Reality
           </h1>
         </div>
@@ -66,13 +69,17 @@ function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-white min-h-screen">
+      <section className="bg-white min-h-screen rounded-t-lg" style={{ position: "relative", zIndex: 1 }}>
         <ProjectsSlider />
       </section>
 
-      <ServicesSection />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <ServicesSection />
+      </div>
 
-      <ContactSection />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <ContactSection />
+      </div>
     </main>
   )
 }
