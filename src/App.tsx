@@ -85,13 +85,57 @@ function LandingPage() {
 }
 
 export default function App() {
-  const [exiting, setExiting] = useState(false)
-  const [gone,    setGone]    = useState(false)
+  const [progress, setProgress] = useState(() => (window as any).__loaderProgress ?? 0)
+  const [exiting,  setExiting]  = useState(false)
+  const [gone,     setGone]     = useState(false)
 
   function handleLoadComplete() {
     setExiting(true)
     setTimeout(() => setGone(true), 780)
   }
+
+  useEffect(() => {
+    const htmlLoader = document.getElementById('html-loader')
+    if (htmlLoader) htmlLoader.remove()
+
+    if (document.readyState === 'complete') {
+      setProgress(1)
+      return
+    }
+
+    const startP = (window as any).__loaderProgress ?? 0
+    const remaining = Math.max((0.9 - startP) / 0.9, 0.05) * 2500
+    let raf: number
+    let start: number | null = null
+
+    const tick = (now: number) => {
+      if (start === null) start = now
+      const t = Math.min((now - start) / remaining, 1)
+      const ease = t * t * (3 - 2 * t)
+      const p = startP + (0.9 - startP) * ease
+      setProgress(p)
+      ;(window as any).__loaderProgress = p
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+
+    const onLoad = () => {
+      cancelAnimationFrame(raf)
+      setProgress(1)
+    }
+    window.addEventListener('load', onLoad)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('load', onLoad)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (progress >= 1) {
+      const t = setTimeout(handleLoadComplete, 500)
+      return () => clearTimeout(t)
+    }
+  }, [progress])
 
   return (
     <>
@@ -108,7 +152,7 @@ export default function App() {
             zIndex: 9999,
           }}
         >
-          <LoadingScreen onComplete={handleLoadComplete} />
+          <LoadingScreen progress={progress} autoPlay={false} />
         </div>
       )}
       <ScrollToTop />
