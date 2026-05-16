@@ -106,13 +106,24 @@
         var PACE = 2500;
 
         window.__loaderProgress = 0;
-        window.addEventListener('load', function() { loaded = true; });
+        var loadFiredAt = null;
+        var pAtLoad = 0;
+        window.addEventListener('load', function() {
+          loadFiredAt = performance.now();
+          pAtLoad = p;
+        });
 
         function tick(now) {
           if (start === null) start = now;
-          var t = (now - start) / PACE;
-          var ease = t < 1 ? t * t * (3 - 2 * t) : 1;
-          p = loaded ? 1 : ease * 0.9;
+          if (loadFiredAt !== null) {
+            var ft = Math.min((now - loadFiredAt) / 1000, 1);
+            var fe = ft * ft * (3 - 2 * ft);
+            p = pAtLoad + (1 - pAtLoad) * fe;
+          } else {
+            var t = (now - start) / PACE;
+            var ease = t < 1 ? t * t * (3 - 2 * t) : 1;
+            p = ease * 0.9;
+          }
           window.__loaderProgress = p;
           var pct = Math.round(p * 100);
           var stage = getStage(p);

@@ -121,7 +121,18 @@ export default function App() {
 
     const onLoad = () => {
       cancelAnimationFrame(raf)
-      setProgress(1)
+      const pAtLoad = (window as any).__loaderProgress ?? 0
+      let finalStart: number | null = null
+      const finalTick = (now: number) => {
+        if (finalStart === null) finalStart = now
+        const ft = Math.min((now - finalStart) / 1000, 1)
+        const ease = ft * ft * (3 - 2 * ft)
+        const p = pAtLoad + (1 - pAtLoad) * ease
+        setProgress(p)
+        ;(window as any).__loaderProgress = p
+        if (ft < 1) requestAnimationFrame(finalTick)
+      }
+      requestAnimationFrame(finalTick)
     }
     window.addEventListener('load', onLoad)
     return () => {
