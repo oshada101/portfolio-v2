@@ -15,11 +15,12 @@ export default function Nav() {
       <div className="flex items-center justify-between px-4 py-2">
         <Link
           to="/"
-          className="font-montserrat-alt text-3xl tracking-widest"
+          className="wordmark text-3xl"
           style={{ color: "var(--primary)" }}
           onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }) }}
+          aria-label="Oshada — home"
         >
-          OSHADA
+          OS<span className="wordmark-kern">H</span>ADA
         </Link>
 
         {/* Desktop links */}

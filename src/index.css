@@ -2,8 +2,20 @@
 
 @theme {
   --font-inter: "Inter", sans-serif;
+  --font-fraunces: "Fraunces", serif;
   --font-space-mono: "Space Mono", monospace;
   --font-montserrat-alt: "Montserrat Alternates", sans-serif;
+  --font-unbounded: "Unbounded", "Montserrat Alternates", sans-serif;
+}
+
+.wordmark {
+  font-family: var(--font-unbounded);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-feature-settings: "ss01", "kern";
+}
+.wordmark-kern {
+  margin-left: -0.09em;
 }
 
 @keyframes loading-dot-pulse {

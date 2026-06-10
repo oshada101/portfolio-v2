@@ -1,6 +1,15 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import { Warp } from "@paper-design/shaders-react"
+
+const BASE_HSL: [number, number, number][] = [
+  [220, 90, 10],
+  [195, 100, 50],
+  [200, 30, 85],
+  [0, 0, 95],
+]
+const toHsl = ([h, s, l]: [number, number, number]) => `hsl(${h}, ${s}%, ${l}%)`
+const DEFAULT_COLORS = BASE_HSL.map(toHsl)
 import chevronsDown from "./assets/chevrons-down.svg"
 import Nav from "./components/Nav"
 import ProjectsSlider from "./components/ProjectsSlider"
@@ -18,15 +27,80 @@ function ScrollToTop() {
 }
 
 function LandingPage() {
+  const [shaderActive, setShaderActive] = useState(true)
+  const targetRef = useRef({ x: 0.5, y: 0.5 })
+  const currentRef = useRef({ x: 0.5, y: 0.5 })
+  const filterWrapRef = useRef<HTMLDivElement>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const setTarget = (cx: number, cy: number) => {
+      targetRef.current.x = Math.max(0, Math.min(1, cx / window.innerWidth))
+      targetRef.current.y = Math.max(0, Math.min(1, cy / window.innerHeight))
+    }
+    const onMouse = (e: MouseEvent) => setTarget(e.clientX, e.clientY)
+    const onTouch = (e: TouchEvent) => { if (e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY) }
+    window.addEventListener("mousemove", onMouse, { passive: true })
+    window.addEventListener("touchmove", onTouch, { passive: true })
+
+    let raf = 0
+    let last = 0
+    const tick = (now: number) => {
+      if (now - last >= 33) {
+        last = now
+        currentRef.current.x += (targetRef.current.x - currentRef.current.x) * 0.08
+        currentRef.current.y += (targetRef.current.y - currentRef.current.y) * 0.08
+        const { x, y } = currentRef.current
+        const hue = (x - 0.5) * 360
+        const sat = 1 + (y - 0.5) * 1.6
+        if (filterWrapRef.current) {
+          filterWrapRef.current.style.filter = `hue-rotate(${hue.toFixed(1)}deg) saturate(${sat.toFixed(2)})`
+        }
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+
+    return () => {
+      window.removeEventListener("mousemove", onMouse)
+      window.removeEventListener("touchmove", onTouch)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([entry]) => setShaderActive(entry.isIntersecting),
+      { threshold: 0 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
     <main>
-      <div style={{ height: "100vh" }} aria-hidden="true" />
+      <div style={{ height: "100vh", position: "relative" }} aria-hidden="true">
+        <div ref={sentinelRef} style={{ position: "absolute", top: "80vh", height: "1px", width: "1px" }} />
+      </div>
       <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000 }}>
         <Nav />
       </div>
 
-      <section className="relative overflow-hidden h-screen" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 0 }}>
-        <div className="absolute inset-0">
+      <section
+        className="relative overflow-hidden h-screen"
+        style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0,
+          zIndex: 0,
+          opacity: shaderActive ? 1 : 0,
+          transition: "opacity 0.6s ease",
+          pointerEvents: shaderActive ? "auto" : "none",
+          background: "linear-gradient(135deg, hsl(220,90%,10%) 0%, hsl(195,100%,50%) 60%, hsl(200,30%,85%) 100%)",
+        }}
+      >
+        <div ref={filterWrapRef} className="absolute inset-0" style={{ willChange: "filter", transition: "filter 0.4s ease-out" }}>
           <Warp
             style={{ height: "100%", width: "100%" }}
             proportion={0.45}
@@ -38,17 +112,19 @@ function LandingPage() {
             shapeScale={0.1}
             scale={1}
             rotation={0}
-            speed={1}
-            colors={["hsl(220, 90%, 10%)", "hsl(195, 100%, 50%)", "hsl(200, 30%, 85%)", "hsl(0, 0%, 95%)"]}
+            speed={shaderActive ? 1 : 0}
+            colors={DEFAULT_COLORS}
           />
         </div>
 
         <div
           className="relative z-10 flex items-center justify-center px-8"
-          style={{ height: "100vh", mixBlendMode: "overlay" }}
+          style={{ height: "100vh" }}
         >
-          <h1 className="font-space-mono text-3xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight uppercase">
-            Turning Ideas Into Reality
+          <h1 className="font-inter text-3xl md:text-7xl lg:text-[5rem] text-white text-center leading-tight uppercase" style={{ fontWeight: 900, textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>
+            Turning{" "}
+            <span className="font-fraunces normal-case italic" style={{ fontWeight: 700 }}>Ideas</span>
+            {" "}Into Reality
           </h1>
         </div>
 
