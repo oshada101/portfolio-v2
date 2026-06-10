@@ -15,7 +15,7 @@
     <title>Oshada</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat+Alternates:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,700&family=Montserrat+Alternates:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
       #html-loader {
         position: fixed;
@@ -68,8 +68,8 @@
         100% { transform: translateX(8em) rotate(180deg); }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-Dz1Bku2b.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CqhzEB1E.css">
+    <script type="module" crossorigin src="/assets/index-CCObEVnv.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-cibPhqS7.css">
   </head>
   <body>
     <div id="html-loader">
@@ -108,13 +108,24 @@
         var PACE = 2500;
 
         window.__loaderProgress = 0;
-        window.addEventListener('load', function() { loaded = true; });
+        var loadFiredAt = null;
+        var pAtLoad = 0;
+        window.addEventListener('load', function() {
+          loadFiredAt = performance.now();
+          pAtLoad = p;
+        });
 
         function tick(now) {
           if (start === null) start = now;
-          var t = (now - start) / PACE;
-          var ease = t < 1 ? t * t * (3 - 2 * t) : 1;
-          p = loaded ? 1 : ease * 0.9;
+          if (loadFiredAt !== null) {
+            var ft = Math.min((now - loadFiredAt) / 1000, 1);
+            var fe = ft * ft * (3 - 2 * ft);
+            p = pAtLoad + (1 - pAtLoad) * fe;
+          } else {
+            var t = (now - start) / PACE;
+            var ease = t < 1 ? t * t * (3 - 2 * t) : 1;
+            p = ease * 0.9;
+          }
           window.__loaderProgress = p;
           var pct = Math.round(p * 100);
           var stage = getStage(p);
